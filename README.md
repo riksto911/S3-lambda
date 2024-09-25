@@ -53,14 +53,17 @@ Ce dossier sera renseigné dans le code terraform et l'upload du fichier .csv se
 4. **Création via terraform d'une table DynamoDb**. Cette création a pour objectif de stocker les données du fichier csv qui seront lues et copiées par la lambda.
 (A compléter par le bout de code de la DB)
 
-6. **Configuration GitLab**
+5. **Configuration GitLab**
+Dans le projet Gitlab, ajouter les variables d'environnement **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** sur la page _"Settings > CI/CD > Variables"
+Ces variables vont autoriser Terraform à s'authentifier et communiquer avec les services AWS pour provisionner l'infrastructure.
 
-In the GitLab project, add the variables **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** on the page _"Settings > CI/CD > Variables"_. These variables will enable Terraform to authenticate and communicate with AWS services to provision the infrastructure.
+6. **Deploiement**
 
-5. **Deploiement**
-
-To deploy the infrastructure, run the job **deploy** on the GitLab pipeline.
+Pour déployer l'infrastructure, cliquer sur le job **deploy** de votre pipeline Gitlab.
 
 ![GitLab pipeline](./images/gitlab-pipeline.png)
 
-6. The job **destruction** is run at the end if you want to delete all resources provisioned by terraform on the AWS cloud.
+7. Le job **destroy** est utilisé à la fin pour détruire toutes les ressources provisionnées par TERRAFORM sur le cloud AWS.
+   **important**
+   
+8. Les buckets crées manuellement à savoir le bucket s3 pour le backend (tfstate) et pour la lambda devront être supprimés manuellement depuis la console AWS.
