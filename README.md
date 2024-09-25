@@ -1,24 +1,29 @@
-# GitLab CI + Terraform : Create a static website using Amazon S3
+# GitLab CI + Terraform : Import d'un fichier CSV dans un bucket S3 avec déclenchement d'une lambda qui va lire le contenu du fichier et copier les données dans une base dynamodb
 
-The aim of this project is to automate the deployment of a static website on Amazon S3.
 
 ## Infrastructure
 
-![Infrastructure Diagram](./images/infrastructure-diagram.drawio.png)
+![image](https://github.com/user-attachments/assets/7904310a-9b48-4e0b-9568-c098a8b18463)
+
 
 ## Tools
 
-The following tools were used for this project:
+Les outils qui ont été utilisés pour ce projet:
 
 - [ ] [GitLab CI/CD](https://docs.gitlab.com/ee/topics/build_your_application.html), is a GitLab feature that lets you set up CI/CD pipelines. We used Gitlab CI/CD to manage the infrastructure deployment pipelines.
 - [ ] [Terraform ](https://developer.hashicorp.com/terraform/docs), automates the provisioning of Cloud resources. We used Terraform to provision the bucket that will host the static website.
-- [ ] [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html), is a storage service. Amazon S3 is used to host static website pages.
+- [ ] [Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html), is a storage service. Amazon S3 is used to stock documents, pictures, logs etc.
+- [ ] [Amazon Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html), is a serverless computing service. We used Lambda to read the content of the csv file copied it in a Dynamodb data base.
+- [ ] [Amazon DynamoDb](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStartedDynamoDB.html), is a no-sql Database used to store the content of the csv file (in this lab)
 
 ## Setup
 
-1. **Create the bucket S3 for Terraform**
+1. **Creation de 2 bucket s3 pour Terraform **
 
-For this project, we first need to create an S3 bucket that will contain the file summarizing the state of the infrastructure provisioned by Terraform. Once the bucket has been created, replace `<your-bucket-terraform-backend>` by the name of the bucket created in the file [backend.tf](./backend.tf#L11).
+Pour ce projet, nous allons avoir besoin de créer 2 buckets via la console AWS.
+
+Le 1er bucket contiendra le fichier de configuration du backend (tfstate). Ce fichier est résume l'état actuel de votre infrastructure provisionnée par Terraform.
+Gardez bien le nom de ce bucket que vous devrez renseigner dans votre code terraform. "<your-bucket-terraform-backend>"
 
 ```
   backend "s3" {
@@ -28,25 +33,34 @@ For this project, we first need to create an S3 bucket that will contain the fil
   }
 ```
 
-2. **Set the bucket name for website**
 
-In the file [variables.tf](./variables.tf#L8), replacee `<your-bucket-website>` by the name of the bucket that will host the static website pages.
+2. **Création "manuelle" du Bucket s3 pour la lambda**
 
+Ensuite il va falloir créer un autre Bucket s3 via la console qui contiendra l'artefact de la Lambda.
+Dans le fichier variables.tf, retenez bien le nom de ce bucket qui vous servira pour sa déclaration coté Terraform.
+Exemple : 
 ```
-  variable "website_bucket_name" {
+  variable "lambda_bucket_name" {
     type    = string
-    default = "<your-bucket-website>"
+    default = "<your-bucket-xxxxx>"
   }
 ```
 
-3. **Configure GitLab**
+3. **Création via terraform du bucket s3 permettant d'uploader le fichier .csv**
+Une fois le bucket déployé, il faudra créer manuellement un dossier nommé "raw-data".
+Ce dossier sera renseigné dans le code terraform et l'upload du fichier .csv se fera dans celui-çi.
+
+4. **Création via terraform d'une table DynamoDb. Cette création a pour objectif de stocker les données du fichier csv qui seront lues et copiées par la lambda.
+(A compléter par le bout de code de la DB)
+
+6. **Configuration GitLab**
 
 In the GitLab project, add the variables **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** on the page _"Settings > CI/CD > Variables"_. These variables will enable Terraform to authenticate and communicate with AWS services to provision the infrastructure.
 
-4. **Deployment**
+5. **Deploiement**
 
 To deploy the infrastructure, run the job **deploy** on the GitLab pipeline.
 
 ![GitLab pipeline](./images/gitlab-pipeline.png)
 
-The job **destroy** is run at the end if you want to delete all resources provisioned by terraform on the AWS cloud.
+6. The job **destruction** is run at the end if you want to delete all resources provisioned by terraform on the AWS cloud.
