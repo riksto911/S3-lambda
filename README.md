@@ -50,7 +50,7 @@ Exemple :
 Une fois le bucket déployé, il faudra créer manuellement un dossier nommé "raw-data".
 Ce dossier sera renseigné dans le code terraform et l'upload du fichier .csv se fera dans celui-çi.
 
-4. **Création via terraform d'une table DynamoDb. Cette création a pour objectif de stocker les données du fichier csv qui seront lues et copiées par la lambda.
+4. **Création via terraform d'une table DynamoDb**. Cette création a pour objectif de stocker les données du fichier csv qui seront lues et copiées par la lambda.
 (A compléter par le bout de code de la DB)
 
 6. **Configuration GitLab**
