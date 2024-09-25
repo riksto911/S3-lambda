@@ -61,7 +61,7 @@ Ces variables vont autoriser Terraform à s'authentifier et communiquer avec les
 
 Pour déployer l'infrastructure, cliquer sur le job **deploy** de votre pipeline Gitlab.
 
-![GitLab pipeline](./images/gitlab-pipeline.png)
+![image](https://github.com/user-attachments/assets/37090184-07a9-46dd-b7ed-d507cbfcbfbe)
 
 7. Le job **destroy** est utilisé à la fin pour détruire toutes les ressources provisionnées par TERRAFORM sur le cloud AWS.
    **important**
